@@ -1,0 +1,14 @@
+<configuration>
+    <net-file value="grid.net.xml"/>
+    <output-trip-file value="grid-demo.rou.xml"/>
+    <trip-attributes value="type=&quot;td_0&quot; departLane=&quot;best&quot; departSpeed=&quot;max&quot; departPos=&quot;random&quot;"/>
+    <lanes value="True"/>
+    <!-- <insertion-density value="300.0"/> -->
+    <begin value="0"/>
+    <end value="3600"/>
+    <insertion-rate value="1000,2500,3000,4000,5000,6000,7000,7500,8000,8000,8500,9000,9500,9000,9000,8500,7500,6500,5000,4000,3000,2000,1000,500,0"/>
+    <!-- <period value="0.6"/> -->
+    <binomial value="10"/>
+    <random-depart value="True"/>
+    <seed value="123"/>
+</configuration>
