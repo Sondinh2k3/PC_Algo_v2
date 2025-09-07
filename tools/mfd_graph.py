@@ -6,7 +6,7 @@ A simple tool to collect data from e1 (flow) and e2 (vehicle count) detectors
 and create a Macroscopic Fundamental Diagram (MFD) graph.
 
 Usage:
-    python mfd_graph.py
+    python mfd_graph.py --sim-config <path> --detector-config <path>
 """
 
 import os
@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 import yaml
 import traci
 import traci.exceptions
+import argparse
 
 # Add project root to system path
 current_dir = os.path.dirname(os.path.abspath(__name__))
@@ -31,93 +32,19 @@ from src.sumosim import SumoSim
 if 'SUMO_HOME' not in os.environ:
     sys.exit("Please declare environment variable 'SUMO_HOME'")
 
-def load_config():
+def load_config(sim_config_path, detector_config_path):
     """Load configuration files."""
     print("Loading configuration files...")
     
     # Load simulation config
-    sim_config_path = os.path.join('src', 'config', 'simulation.yml')
     with open(sim_config_path, 'r') as f:
         sim_config = yaml.safe_load(f)['config']
     
     # Load detector config
-    detector_config_path = os.path.join('src', 'config', 'detector_config.json')
     with open(detector_config_path, 'r') as f:
         detector_config = json.load(f)
     
     return sim_config, detector_config
-
-# def collect_data(sim_config, detector_config):
-#     """Collect data from e1 and e2 detectors."""
-#     print("Starting SUMO simulation...")
-    
-#     # Get detector IDs
-#     e2_detectors = detector_config['algorithm_input_detectors']['detector_ids']  # Vehicle count
-#     e1_detectors = detector_config['mfd_input_flow_detectors']['detector_ids']   # Flow
-    
-#     print(f"Found {len(e2_detectors)} e2 detectors for vehicle count")
-#     print(f"Found {len(e1_detectors)} e1 detectors for flow")
-    
-#     # Initialize SUMO simulation
-#     # sim_config['config_file'] = os.path.join('src', sim_config['config_file']) # This line is removed
-#     sumo_sim = SumoSim(sim_config)
-    
-#     data_points = []
-    
-#     try:
-#         sumo_sim.start()
-        
-#         # Simulation parameters
-#         simulation_time = 3000  # 5 minutes
-#         step_length = float(sim_config.get('step_length', 1.0))
-#         total_steps = int(simulation_time / step_length)
-        
-#         print(f"Running simulation for {simulation_time} seconds...")
-        
-#         for step in range(total_steps):
-#             sumo_sim.step()
-            
-#             # Collect vehicle count from e2 detectors
-#             vehicle_count = 0
-#             for det_id in e2_detectors:
-#                 try:
-#                     vehicle_count += traci.lanearea.getLastStepVehicleNumber(det_id)
-#                 except traci.exceptions.TraCIException:
-#                     pass  # Skip if detector not found
-            
-#             # Collect flow from e1 detectors
-#             flow_count = 0
-#             for det_id in e1_detectors:
-#                 try:
-#                     flow_count += traci.inductionloop.getLastIntervalVehicleNumber(det_id)
-#                 except traci.exceptions.TraCIException:
-#                     pass  # Skip if detector not found
-            
-#             # Convert flow to vehicles per hour
-#             flow_per_hour = flow_count * (3600 / step_length)
-            
-#             # Store data point
-#             data_points.append({
-#                 'vehicle_count': vehicle_count,
-#                 'flow_per_hour': flow_per_hour,
-#                 'time': step * step_length
-#             })
-            
-#             # Print progress every 30 seconds
-#             if (step + 1) % 30 == 0:
-#                 print(f"  Step {step + 1}/{total_steps}: "
-#                       f"Vehicles={vehicle_count}, Flow={flow_per_hour:.1f} veh/h")
-        
-#         print("Simulation completed successfully!")
-        
-#     except Exception as e:
-#         print(f"Error during simulation: {e}")
-#         return None
-#     finally:
-#         if traci.isLoaded():
-#             sumo_sim.close()
-    
-#     return data_points
 
 def collect_data(sim_config, detector_config):
     """
@@ -139,7 +66,7 @@ def collect_data(sim_config, detector_config):
     data_points = []
     
     try:
-        sumo_sim.start()
+        sumo_sim.start() 
         
         # Simulation parameters
         simulation_time = 3000
@@ -213,7 +140,7 @@ def collect_data(sim_config, detector_config):
     
     return data_points
 
-def create_mfd_graph(data_points):
+def create_mfd_graph(data_points, output_dir):
     """Create MFD graph from collected data (Flow vs. Accumulation)."""
     if not data_points:
         print("No data collected. Cannot create graph.")
@@ -264,7 +191,6 @@ def create_mfd_graph(data_points):
              verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
     
     # Save and show
-    output_dir = os.path.join(project_root, "output")
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "mfd_graph.png")
     
@@ -277,24 +203,26 @@ def create_mfd_graph(data_points):
 
 def main():
     """Main function."""
+    parser = argparse.ArgumentParser(description='Create a Macroscopic Fundamental Diagram (MFD) graph.')
+    parser.add_argument('--sim-config', type=str, default=os.path.join(project_root, 'src', 'config', 'simulation.yml'), help='Path to simulation.yml')
+    parser.add_argument('--detector-config', type=str, default=os.path.join(project_root, 'src', 'config', 'detector_config.json'), help='Path to detector_config.json')
+    parser.add_argument('--output-dir', type=str, default=os.path.join(project_root, 'output'), help='Directory to save the MFD graph')
+    args = parser.parse_args()
+
     print("=" * 50)
     print("MFD Graph Tool")
     print("=" * 50)
     
-    # Change to project root
-    original_cwd = os.getcwd()
-    os.chdir(project_root)
-    
     try:
         # Load configuration
-        sim_config, detector_config = load_config()
+        sim_config, detector_config = load_config(args.sim_config, args.detector_config)
         
         # Collect data
         data_points = collect_data(sim_config, detector_config)
         
         # Create graph
         if data_points:
-            create_mfd_graph(data_points)
+            create_mfd_graph(data_points, args.output_dir)
             print("\nMFD analysis completed successfully!")
         else:
             print("Failed to collect data.")
@@ -303,8 +231,6 @@ def main():
         print(f"Error: {e}")
         import traceback
         traceback.print_exc()
-    finally:
-        os.chdir(original_cwd)
 
 if __name__ == "__main__":
     main()

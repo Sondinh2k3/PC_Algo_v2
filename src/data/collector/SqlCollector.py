@@ -1,4 +1,5 @@
 from mysql import connector
+import logging
 
 class SqlCollector:
     def __init__(self, host: str, port: int, user: str, password: str, database: str):
@@ -24,8 +25,8 @@ class SqlCollector:
             if self.conn:
                 try:
                     self.conn.close()
-                except:
-                    pass  # Ignore errors when closing
+                except Exception as e:
+                    logging.warning(f"Error while closing previous MySQL connection: {e}")
             self.conn = connector.connect(**self.connection_config)
             print("[INFO] MySQL connection established successfully")
             self.connection_attempts = 0  # Reset on successful connection

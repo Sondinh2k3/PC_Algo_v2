@@ -76,8 +76,8 @@ class IntersectionAnalyzer:
             print(f"✅ Tìm thấy {len(self.traffic_lights)} traffic lights và {len(self.intersections)} intersections")
             return self.intersections
             
-        except Exception as e:
-            print(f"❌ Lỗi khi phân tích network: {e}")
+        except (ET.ParseError, FileNotFoundError) as e:
+            logging.error(f"Lỗi khi phân tích network file {self.net_file_path}: {e}", exc_info=True)
             return {}
     
     def analyze_from_simulation(self) -> Dict:
@@ -132,8 +132,8 @@ class IntersectionAnalyzer:
             
             return intersection_data
             
-        except Exception as e:
-            print(f"❌ Lỗi khi phân tích từ simulation: {e}")
+        except traci.TraCIException as e:
+            logging.error(f"Lỗi khi giao tiếp với TraCI trong quá trình phân tích simulation: {e}", exc_info=True)
             return {}
     
     def _classify_phases(self, phases: List[Dict], controlled_lanes: List[str]) -> Tuple[List[int], List[int]]:
@@ -202,8 +202,8 @@ class IntersectionAnalyzer:
         simulation_data = {}
         try:
             simulation_data = self.analyze_from_simulation()
-        except:
-            print("⚠️ Không thể kết nối với simulation, chỉ sử dụng dữ liệu network")
+        except traci.TraCIException as e:
+            logging.warning(f"Không thể kết nối với simulation, chỉ sử dụng dữ liệu network: {e}")
         
         # Kết hợp dữ liệu
         combined_data = {
@@ -296,21 +296,4 @@ class IntersectionAnalyzer:
         return optimization_params
 
 
-def analyze_phuquoc_network():
-    """
-    Hàm tiện ích để phân tích mạng lưới Phú Quốc
-    """
-    # Đường dẫn đến file network
-    net_file = "../PhuQuoc/phuquoc.net.xml"
-    
-    if not os.path.exists(net_file):
-        print(f"❌ Không tìm thấy file network: {net_file}")
-        return None
-    
-    analyzer = IntersectionAnalyzer(net_file)
-    return analyzer.generate_intersection_config("intersection_config.json")
 
-
-if __name__ == "__main__":
-    # Chạy phân tích mạng lưới Phú Quốc
-    analyze_phuquoc_network()

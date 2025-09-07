@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import logging
+import argparse
 
 # Thiết lập logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -296,34 +297,40 @@ def plot_throughput_over_time(df_algo, df_baseline, output_dir):
 
 def main():
     """Hàm chính"""
+    parser = argparse.ArgumentParser(description='Phân tích hiệu năng giao thông theo vùng.')
+    parser.add_argument('--config-path', type=str, default=os.path.join(os.path.dirname(__file__), '..', 'src', 'config', 'analysis_config.json'), help='Đường dẫn đến file analysis_config.json')
+    parser.add_argument('--output-dir', type=str, default=os.path.join(os.path.dirname(__file__), '..', 'output'), help='Thư mục để lưu biểu đồ')
+    parser.add_argument('--trip-algo', type=str, help='Đường dẫn đến file tripinfo.xml của thuật toán')
+    parser.add_argument('--trip-baseline', type=str, help='Đường dẫn đến file tripinfo_baseline.xml')
+    parser.add_argument('--edge-algo', type=str, help='Đường dẫn đến file edgedata.xml của thuật toán')
+    parser.add_argument('--edge-baseline', type=str, help='Đường dẫn đến file edgedata_baseline.xml')
+    parser.add_argument('--route-algo', type=str, help='Đường dẫn đến file vehroutes.xml của thuật toán')
+    parser.add_argument('--route-baseline', type=str, help='Đường dẫn đến file vehroutes_baseline.xml')
+    args = parser.parse_args()
+
     print("\n" + "="*70)
     print("🚗 PHÂN TÍCH HIỆU NĂNG GIAO THÔNG THEO VÙNG")
     print("="*70)
 
-    # Thiết lập đường dẫn
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    output_dir = os.path.join(project_root, 'output')
-    config_path = os.path.join(project_root, 'src', 'config', 'analysis_config.json')
-    
     # Kiểm tra thư mục output
-    if not ensure_output_dir(output_dir):
+    if not ensure_output_dir(args.output_dir):
         logger.error("❌ Không thể tạo thư mục output")
         return
 
     # Load target edges từ config
-    target_edges = load_target_edges(config_path)
+    target_edges = load_target_edges(args.config_path)
     if not target_edges:
         logger.error("❌ Không thể load target edges từ config")
         return
 
     # Đường dẫn files dữ liệu
     files = {
-        'trip_algo': os.path.join(output_dir, 'tripinfo.xml'),
-        'trip_baseline': os.path.join(output_dir, 'tripinfo_baseline.xml'),
-        'edge_algo': os.path.join(output_dir, 'edgedata.xml'),
-        'edge_baseline': os.path.join(output_dir, 'edgedata_baseline.xml'),
-        'route_algo': os.path.join(output_dir, 'vehroutes.xml'),
-        'route_baseline': os.path.join(output_dir, 'vehroutes_baseline.xml')
+        'trip_algo': args.trip_algo,
+        'trip_baseline': args.trip_baseline,
+        'edge_algo': args.edge_algo,
+        'edge_baseline': args.edge_baseline,
+        'route_algo': args.route_algo,
+        'route_baseline': args.route_baseline
     }
 
     logger.info("📊 Đang đọc và lọc dữ liệu...")
@@ -349,9 +356,9 @@ def main():
     
     # Tạo biểu đồ
     logger.info("🎨 Đang tạo biểu đồ so sánh...")
-    plot_delay_comparison(df_trip_algo, df_trip_baseline, output_dir)
-    plot_travel_time_distribution(df_trip_algo, df_trip_baseline, output_dir)
-    plot_throughput_over_time(df_edge_algo, df_edge_baseline, output_dir)
+    plot_delay_comparison(df_trip_algo, df_trip_baseline, args.output_dir)
+    plot_travel_time_distribution(df_trip_algo, df_trip_baseline, args.output_dir)
+    plot_throughput_over_time(df_edge_algo, df_edge_baseline, args.output_dir)
     
     print("\n" + "="*70)
     print("✅ HOÀN TẤT! Các biểu đồ đã được lưu trong thư mục output/")

@@ -1,16 +1,12 @@
-
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 import os
+import argparse
 
 # ==============================================================================
 # --- CONFIGURATION ---
 # Vui lòng chỉnh sửa các giá trị trong phần này cho phù hợp với kịch bản của bạn
 # ==============================================================================
-
-# 1. ĐƯỜNG DẪN ĐẾN FILE CẦN PHÂN TÍCH
-# Thay đổi tên file nếu bạn chạy mô phỏng và có file output khác
-VEHROUTE_FILE = "../output/vehroutes_baseline.xml"
 
 # 2. ĐỊNH NGHĨA VÀNH ĐAI (PERIMETER)
 # Đây là phần quan trọng nhất bạn cần định nghĩa.
@@ -50,7 +46,7 @@ PERIMETER_EDGES = {
 # Bạn không cần chỉnh sửa phần dưới này
 # ==============================================================================
 
-def analyze_turn_ratios():
+def analyze_turn_ratios(vehroute_file):
     """
     Phân tích file vehicle routes để tính toán tỷ lệ rẽ tại các nút giao vành đai.
     """
@@ -59,16 +55,16 @@ def analyze_turn_ratios():
     turn_counts = defaultdict(lambda: defaultdict(int))
 
     # Kiểm tra file tồn tại
-    if not os.path.exists(VEHROUTE_FILE):
-        print(f"LỖI: Không tìm thấy file '{VEHROUTE_FILE}'.")
+    if not os.path.exists(vehroute_file):
+        print(f"LỖI: Không tìm thấy file '{vehroute_file}'.")
         print("Vui lòng kiểm tra lại đường dẫn và đảm bảo bạn đã chạy mô phỏng để tạo file output.")
         return
 
-    print(f"Đang phân tích file: {VEHROUTE_FILE}...")
+    print(f"Đang phân tích file: {vehroute_file}...")
 
     # Phân tích file XML một cách hiệu quả về bộ nhớ
     try:
-        context = ET.iterparse(VEHROUTE_FILE, events=('start', 'end'))
+        context = ET.iterparse(vehroute_file, events=('start', 'end'))
         context = iter(context)
         event, root = next(context)
 
@@ -85,7 +81,7 @@ def analyze_turn_ratios():
                 # Xóa phần tử đã xử lý để giải phóng bộ nhớ
                 root.clear()
     except ET.ParseError as e:
-        print(f"LỖI: File XML '{VEHROUTE_FILE}' bị lỗi hoặc không đúng định dạng: {e}")
+        print(f"LỖI: File XML '{vehroute_file}' bị lỗi hoặc không đúng định dạng: {e}")
         return
 
 
@@ -130,4 +126,7 @@ def analyze_turn_ratios():
 
 
 if __name__ == "__main__":
-    analyze_turn_ratios()
+    parser = argparse.ArgumentParser(description='Phân tích file vehicle routes để tính toán tỷ lệ rẽ tại các nút giao vành đai.')
+    parser.add_argument('vehroute_file', type=str, help='Đường dẫn đến file vehroutes.xml')
+    args = parser.parse_args()
+    analyze_turn_ratios(args.vehroute_file)

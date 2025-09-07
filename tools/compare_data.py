@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import numpy as np
+import argparse
 
 def parse_detector_xml(file_path):
     """Parses a custom detector XML file and returns a DataFrame."""
@@ -75,17 +76,17 @@ def plot_comparison(df_algo, df_baseline, param, title, ylabel, output_dir, time
     plt.close()
 
 if __name__ == "__main__":
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    output_dir = os.path.join(project_root, 'output')
-    
-    algo_file = os.path.join(output_dir, 'data_algo.xml')
-    baseline_file = os.path.join(output_dir, 'data_baseline.xml')
+    parser = argparse.ArgumentParser(description='So sánh dữ liệu từ hai file XML detector.')
+    parser.add_argument('--algo-file', type=str, default=os.path.join('..', 'output', 'data_algo.xml'), help='Đường dẫn đến file XML của thuật toán')
+    parser.add_argument('--baseline-file', type=str, default=os.path.join('..', 'output', 'data_baseline.xml'), help='Đường dẫn đến file XML của baseline')
+    parser.add_argument('--output-dir', type=str, default=os.path.join('..', 'output'), help='Thư mục để lưu biểu đồ')
+    args = parser.parse_args()
 
-    print(f"Parsing Algorithm data from: {algo_file}")
-    df_algo = parse_detector_xml(algo_file)
+    print(f"Parsing Algorithm data from: {args.algo_file}")
+    df_algo = parse_detector_xml(args.algo_file)
     
-    print(f"Parsing Baseline data from: {baseline_file}")
-    df_baseline = parse_detector_xml(baseline_file)
+    print(f"Parsing Baseline data from: {args.baseline_file}")
+    df_baseline = parse_detector_xml(args.baseline_file)
 
     if df_algo.empty or df_baseline.empty:
         print("\nCould not proceed with plotting due to missing or invalid data.")
@@ -124,8 +125,8 @@ if __name__ == "__main__":
     for param, ylabel in plot_params.items():
         if param in df_algo_agg.columns and param in df_baseline_agg.columns:
             title = f'{param.replace("_", " ").title()} Comparison (50s Interval)'
-            plot_comparison(df_algo_agg, df_baseline_agg, param, title, ylabel, output_dir, time_col='time_interval')
+            plot_comparison(df_algo_agg, df_baseline_agg, param, title, ylabel, args.output_dir, time_col='time_interval')
         else:
             print(f"Skipping '{param}' plot: column not found in one or both dataframes.")
     
-    print(f"\nComparison plots saved to {output_dir}")
+    print(f"\nComparison plots saved to {args.output_dir}")

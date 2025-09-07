@@ -14,7 +14,7 @@ class IntersectionConfigManager:
     Quản lý cấu hình intersection từ file JSON với cấu trúc pha linh hoạt.
     """
     
-    def __init__(self, config_file: str = "src/intersection_config.json"):
+    def __init__(self, config_file: str = "src/config/intersection_config.json"):
         """
         Khởi tạo config manager.
         

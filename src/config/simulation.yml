@@ -15,4 +15,4 @@ config:
   # --- Main loop parameters ---
   sampling_interval_s: 10      # (seconds) How often to sample data from detectors
   aggregation_interval_s: 50   # (seconds) How often to aggregate the sampled data
-  total_simulation_time: 5000 # (seconds) Total duration of the simulation
+  total_simulation_time: 8000 # (seconds) Total duration of the simulation
