@@ -54,3 +54,9 @@ PC_Algo_v2/
 3.  **Chạy**: Thực thi lệnh `python src/main.py` để bắt đầu.
 
 Để biết thêm chi tiết về cách cài đặt, cấu hình và vận hành hệ thống, vui lòng xem file **[HƯỚNG_DẪN_SỬ_DỤNG.md](HƯỚNG_DẪN_SỬ_DỤNG.md)**.
+
+## 6. Generate kịch bản route:
+
+python 'C:\Program Files (x86)\Eclipse\Sumo\tools\randomTrips.py' -c grid.conf.xml
+
+# Test WSL

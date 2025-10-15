@@ -70,6 +70,9 @@
           "p": {
             "queue_detectors": [
               "e2_0"
+            ],
+            "queue2_detector": [
+              "e1_2"
             ]
           },
           "s": [
@@ -77,6 +80,9 @@
               "comment": "Secondary Phase 2",
               "queue_detectors": [
                 "e2_3"
+              ],
+              "queue2_detector": [
+                "e1_3"
               ]
             }
           ]
@@ -87,6 +93,9 @@
           "p": {
             "queue_detectors": [
               "e2_6"
+            ],
+            "queue2_detector": [
+              "e1_6"
             ]
           },
           "s": [
@@ -95,6 +104,10 @@
               "queue_detectors": [
                 "e2_4",
                 "e2_7"
+              ],
+              "queue2_detector": [
+                "e1_4",
+                "e1_7"
               ]
             }
           ]
@@ -105,6 +118,9 @@
           "p": {
             "queue_detectors": [
               "e2_9"
+            ],
+            "queue2_detector": [
+              "e1_10"
             ]
           },
           "s": [
@@ -112,6 +128,9 @@
               "comment": "Secondary Phase 4",
               "queue_detectors": [
                 "e2_8"
+              ],
+              "queue2_detector": [
+                "e1_8"
               ]
             }
           ]
@@ -123,6 +142,9 @@
           "p": {
             "queue_detectors": [
               "e2_15"
+            ],
+            "queue2_detector": [
+              "e1_15"
             ]
           },
           "s": [
@@ -131,6 +153,10 @@
               "queue_detectors": [
                 "e2_13",
                 "e2_14"
+              ],
+              "queue2_detector": [
+                "e1_13",
+                "e1_14"
               ]
             }
           ]
@@ -142,6 +168,9 @@
           "p": {
             "queue_detectors": [
               "e2_20"
+            ],
+            "queue2_detector": [
+              "e1_20"
             ]
           },
           "s": [
@@ -150,6 +179,10 @@
               "queue_detectors": [
                 "e2_22",
                 "e2_21"
+              ],
+              "queue2_detector": [
+                "e1_21",
+                "e1_22"
               ]
             }
           ]
@@ -160,7 +193,10 @@
         "phases": {
           "p": {
             "queue_detectors": [
-              "e2_26"
+              "e2_25"
+            ],
+            "queue2_detector": [
+              "e1_25"
             ]
           },
           "s": [
@@ -168,6 +204,9 @@
               "comment": "Secondary Phase 4",
               "queue_detectors": [
                 "e2_27"
+              ],
+              "queue2_detector": [
+                "e1_27"
               ]
             }
           ]
@@ -179,6 +218,9 @@
           "p": {
             "queue_detectors": [
               "e2_30"
+            ],
+            "queue2_detector": [
+              "e1_29"
             ]
           },
           "s": [
@@ -187,6 +229,10 @@
               "queue_detectors": [
                 "e2_28",
                 "e2_31"
+              ],
+              "queue2_detector": [
+                "e1_28",
+                "e1_31"
               ]
             }
           ]
@@ -198,6 +244,9 @@
           "p": {
             "queue_detectors": [
               "e2_33"
+            ],
+            "queue2_detector": [
+              "e1_33"
             ]
           },
           "s": [
@@ -205,6 +254,9 @@
               "comment": "Secondary Phase 4",
               "queue_detectors": [
                 "e2_32"
+              ],
+              "queue2_detector": [
+                "e1_32"
               ]
             }
           ]

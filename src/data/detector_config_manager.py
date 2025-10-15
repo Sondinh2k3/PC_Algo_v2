@@ -54,3 +54,13 @@ class DetectorConfigManager:
             Dict: Cấu trúc các detector cho từng intersection.
         """
         return self.config_data.get('solver_input_detectors', {}).get('intersections', {})
+    
+    def get_mfd_input_flow_detectors(self) -> List[str]:
+        """
+        Lấy danh sách các detector dùng cho thu flow đầu vào của thuật toán.
+        
+        Returns:
+            List[str]: Danh sách detector IDs.
+        """
+        return self.config_data.get('mfd_input_flow_detectors', {}).get('detector_ids', {})
+

@@ -69,7 +69,7 @@ def collect_data(sim_config, detector_config):
         sumo_sim.start() 
         
         # Simulation parameters
-        simulation_time = 3000
+        simulation_time = 6000
         step_length = float(sim_config.get('step_length', 1.0))
         total_steps = int(simulation_time / step_length)
 
@@ -90,7 +90,12 @@ def collect_data(sim_config, detector_config):
             current_accumulation = 0
             for det_id in e2_detectors:
                 try:
-                    current_accumulation += traci.lanearea.getLastStepVehicleNumber(det_id)
+                    space_occupy = traci.lanearea.getLastIntervalOccupancy(det_id)
+                    road_length = 80
+                    num_lane = 1
+                    average_length_of_vehicles = 2.5
+                    accumulation = road_length * (num_lane / (100 * average_length_of_vehicles)) * space_occupy
+                    current_accumulation += accumulation
                 except traci.exceptions.TraCIException:
                     pass
             accumulation_samples.append(current_accumulation)
